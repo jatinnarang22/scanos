@@ -90,7 +90,7 @@ export function shiftDateString(dateStr: string, deltaDays: number): string {
 export function formatDateForHeading(dateStr: string): string {
   const [y, m, d] = dateStr.split("-").map(Number);
   const utcDate = new Date(Date.UTC(y, m - 1, d));
-  return utcDate.toLocaleDateString(undefined, {
+  return utcDate.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",

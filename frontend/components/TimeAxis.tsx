@@ -9,7 +9,7 @@ export default function TimeAxis() {
 
   return (
     <div className="w-16 shrink-0 border-r border-slate-200">
-      <div className="h-11 border-b border-slate-200" />
+      <div className="sticky top-0 z-10 h-11 border-b border-slate-200 bg-white" />
       <div>
         {slots.map((slotStart) => (
           <div

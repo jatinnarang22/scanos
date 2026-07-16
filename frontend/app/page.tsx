@@ -57,8 +57,8 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <header className="mb-6">
+    <main className="mx-auto flex h-screen w-full max-w-[1600px] flex-col px-4 py-6 sm:px-6">
+      <header className="mb-4 shrink-0">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">ScanOS</p>
         <h1 className="text-2xl font-bold text-slate-900">Scan Slot Scheduler</h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -66,22 +66,26 @@ export default function Home() {
         </p>
       </header>
 
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-3">
         <DateSwitcher date={date} onChange={setDate} />
         <ModalityFilter selected={modalityFilter} onChange={setModalityFilter} />
       </div>
 
-      <ScheduleBoard
-        machines={filteredMachines}
-        appointments={visibleAppointments}
-        loading={machinesLoading || appointmentsLoading}
-        error={machinesError ?? appointmentsError}
-        onSlotClick={(machine, slotStartMinutes) => setBookingTarget({ machine, slotStartMinutes })}
-        onAppointmentClick={(appointment) => {
-          setCancelTarget(appointment);
-          setCancelError(null);
-        }}
-      />
+      <div className="min-h-0 flex-1">
+        <ScheduleBoard
+          machines={filteredMachines}
+          appointments={visibleAppointments}
+          loading={machinesLoading || appointmentsLoading}
+          error={machinesError ?? appointmentsError}
+          onSlotClick={(machine, slotStartMinutes) =>
+            setBookingTarget({ machine, slotStartMinutes })
+          }
+          onAppointmentClick={(appointment) => {
+            setCancelTarget(appointment);
+            setCancelError(null);
+          }}
+        />
+      </div>
 
       {bookingTarget && (
         <BookingModal

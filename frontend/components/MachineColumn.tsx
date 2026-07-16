@@ -27,7 +27,7 @@ export default function MachineColumn({
 
   return (
     <div className="min-w-[170px] flex-1 border-l border-slate-200 first:border-l-0">
-      <div className="flex h-11 items-center gap-2 border-b border-slate-200 bg-white px-3">
+      <div className="sticky top-0 z-10 flex h-11 items-center gap-2 border-b border-slate-200 bg-white px-3">
         <span className={`h-2 w-2 shrink-0 rounded-full ${styles.dot}`} />
         <span className="truncate text-sm font-semibold text-slate-800">{machine.name}</span>
         <span

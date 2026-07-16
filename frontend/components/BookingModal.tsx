@@ -64,7 +64,7 @@ export default function BookingModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-xl bg-white p-5 shadow-xl"
+        className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-xl bg-white p-5 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <h2 className="text-lg font-semibold text-slate-900">Book {machine.name}</h2>

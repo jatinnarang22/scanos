@@ -25,7 +25,7 @@ export default function ScheduleBoard({
 }: ScheduleBoardProps) {
   if (loading) {
     return (
-      <div className="flex h-96 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-500">
+      <div className="flex h-full items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-500">
         Loading schedule…
       </div>
     );
@@ -33,7 +33,7 @@ export default function ScheduleBoard({
 
   if (error) {
     return (
-      <div className="flex h-96 flex-col items-center justify-center gap-1 rounded-xl border border-red-200 bg-red-50 px-4 text-center">
+      <div className="flex h-full flex-col items-center justify-center gap-1 rounded-xl border border-red-200 bg-red-50 px-4 text-center">
         <p className="text-sm font-semibold text-red-700">Couldn&rsquo;t load the schedule</p>
         <p className="text-sm text-red-600">{error}</p>
       </div>
@@ -42,14 +42,14 @@ export default function ScheduleBoard({
 
   if (machines.length === 0) {
     return (
-      <div className="flex h-96 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-500">
+      <div className="flex h-full items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-500">
         No machines match the selected filter.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm">
       <div className="flex min-w-fit">
         <TimeAxis />
         {machines.map((machine) => (
