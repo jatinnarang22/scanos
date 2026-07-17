@@ -24,7 +24,7 @@ export default function AppointmentBlock({ appointment, onClick }: AppointmentBl
       onClick={onClick}
       className={`pointer-events-auto absolute left-1 right-1 overflow-hidden rounded-md border px-2 py-1 text-left text-xs shadow-sm transition-colors ${styles.block}`}
       style={{ top, height: Math.max(height, 22) }}
-      title={`${appointment.patient_name} · ${startLabel}–${endLabel} – click to cancel`}
+      title={`${appointment.patient_name} · ${startLabel}–${endLabel} – click to edit`}
     >
       <div className="truncate font-semibold leading-tight">{appointment.patient_name}</div>
       <div className="truncate text-[11px] leading-tight opacity-80">

@@ -66,6 +66,26 @@ def validate_booking_shape(start_time, end_time) -> None:
         )
 
 
+def _raise_if_overlapping(*, machine, start_time, end_time, exclude_pk=None) -> None:
+    """Shared by create and update: locks the candidate rows for this
+    machine/time-range and raises OVERLAP if any (other than the one
+    being updated, if any) conflicts. See create_appointment's
+    concurrency note for why select_for_update() is used here.
+    """
+    conflicting = Appointment.objects.select_for_update().filter(
+        machine=machine,
+        start_time__lt=end_time,
+        end_time__gt=start_time,
+    )
+    if exclude_pk is not None:
+        conflicting = conflicting.exclude(pk=exclude_pk)
+    if conflicting.exists():
+        raise BookingError(
+            "OVERLAP",
+            "This machine is already booked for part of that time range.",
+        )
+
+
 @transaction.atomic
 def create_appointment(*, machine, patient_name: str, start_time, end_time) -> Appointment:
     """The single entry point for booking a slot. Runs the stateless
@@ -87,17 +107,7 @@ def create_appointment(*, machine, patient_name: str, start_time, end_time) -> A
         raise BookingError("INVALID_PATIENT_NAME", "Patient name is required.")
 
     validate_booking_shape(start_time, end_time)
-
-    conflicting = Appointment.objects.select_for_update().filter(
-        machine=machine,
-        start_time__lt=end_time,
-        end_time__gt=start_time,
-    )
-    if conflicting.exists():
-        raise BookingError(
-            "OVERLAP",
-            "This machine is already booked for part of that time range.",
-        )
+    _raise_if_overlapping(machine=machine, start_time=start_time, end_time=end_time)
 
     return Appointment.objects.create(
         machine=machine,
@@ -105,3 +115,37 @@ def create_appointment(*, machine, patient_name: str, start_time, end_time) -> A
         start_time=start_time,
         end_time=end_time,
     )
+
+
+@transaction.atomic
+def update_appointment(
+    appointment: Appointment,
+    *,
+    machine,
+    patient_name: str,
+    start_time,
+    end_time,
+    notes: str = "",
+) -> Appointment:
+    """Edits an existing appointment in place -- patient, machine, time
+    range, and notes are all editable. Runs the exact same shape and
+    overlap checks as create_appointment, with one difference: the
+    overlap check excludes the appointment's own row, since an
+    unmoved (or merely reworded) booking must never be reported as
+    conflicting with itself.
+    """
+    if not patient_name or not patient_name.strip():
+        raise BookingError("INVALID_PATIENT_NAME", "Patient name is required.")
+
+    validate_booking_shape(start_time, end_time)
+    _raise_if_overlapping(
+        machine=machine, start_time=start_time, end_time=end_time, exclude_pk=appointment.pk
+    )
+
+    appointment.machine = machine
+    appointment.patient_name = patient_name.strip()
+    appointment.start_time = start_time
+    appointment.end_time = end_time
+    appointment.notes = notes.strip() if notes else ""
+    appointment.save()
+    return appointment

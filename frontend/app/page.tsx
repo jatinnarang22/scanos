@@ -4,6 +4,7 @@ import { useState } from "react";
 import BookingModal from "@/components/BookingModal";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import DateSwitcher from "@/components/DateSwitcher";
+import EditAppointmentModal from "@/components/EditAppointmentModal";
 import ModalityFilter from "@/components/ModalityFilter";
 import ScheduleBoard from "@/components/ScheduleBoard";
 import { useAppointments } from "@/hooks/useAppointments";
@@ -23,12 +24,15 @@ export default function Home() {
     error: appointmentsError,
     addLocally,
     removeLocally,
+    updateLocally,
   } = useAppointments(date);
 
   const [bookingTarget, setBookingTarget] = useState<{
     machine: Machine;
     slotStartMinutes: number;
   } | null>(null);
+
+  const [editTarget, setEditTarget] = useState<Appointment | null>(null);
 
   const [cancelTarget, setCancelTarget] = useState<Appointment | null>(null);
   const [cancelError, setCancelError] = useState<string | null>(null);
@@ -47,6 +51,7 @@ export default function Home() {
       await cancelAppointment(cancelTarget.id);
       removeLocally(cancelTarget.id);
       setCancelTarget(null);
+      setEditTarget(null);
     } catch (err) {
       const message =
         err instanceof ApiRequestError ? err.message : "Could not cancel this appointment.";
@@ -62,7 +67,7 @@ export default function Home() {
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">ScanOS</p>
         <h1 className="text-2xl font-bold text-slate-900">Scan Slot Scheduler</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Click any open slot to book it. Click a booking to cancel it.
+          Click any open slot to book it. Click a booking to edit or cancel it.
         </p>
       </header>
 
@@ -81,8 +86,7 @@ export default function Home() {
             setBookingTarget({ machine, slotStartMinutes })
           }
           onAppointmentClick={(appointment) => {
-            setCancelTarget(appointment);
-            setCancelError(null);
+            setEditTarget(appointment);
           }}
         />
       </div>
@@ -96,6 +100,22 @@ export default function Home() {
           onCreated={(appointment) => {
             addLocally(appointment);
             setBookingTarget(null);
+          }}
+        />
+      )}
+
+      {editTarget && (
+        <EditAppointmentModal
+          appointment={editTarget}
+          machines={machines}
+          onClose={() => setEditTarget(null)}
+          onSaved={(appointment) => {
+            updateLocally(appointment);
+            setEditTarget(null);
+          }}
+          onRequestCancel={() => {
+            setCancelTarget(editTarget);
+            setCancelError(null);
           }}
         />
       )}

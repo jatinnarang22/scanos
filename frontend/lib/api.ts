@@ -1,4 +1,10 @@
-import type { ApiErrorBody, Appointment, CreateAppointmentPayload, Machine } from "./types";
+import type {
+  ApiErrorBody,
+  Appointment,
+  CreateAppointmentPayload,
+  Machine,
+  UpdateAppointmentPayload,
+} from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 
@@ -53,6 +59,19 @@ export async function createAppointment(
 ): Promise<Appointment> {
   const res = await fetch(`${API_BASE_URL}/appointments/`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw await parseErrorBody(res);
+  return res.json();
+}
+
+export async function updateAppointment(
+  id: number,
+  payload: UpdateAppointmentPayload
+): Promise<Appointment> {
+  const res = await fetch(`${API_BASE_URL}/appointments/${id}/`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });

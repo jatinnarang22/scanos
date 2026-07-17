@@ -13,8 +13,8 @@ interface MachineColumnProps {
 /** One column = one machine. The empty-slot grid is a stack of clickable
  *  30-minute buttons; appointment blocks sit in an absolutely positioned
  *  overlay above them, so clicking an occupied area hits the block (to
- *  cancel) while clicking anywhere else hits the underlying slot (to
- *  book). Nothing about slot count or column height is hardcoded --
+ *  edit or cancel) while clicking anywhere else hits the underlying slot
+ *  (to book). Nothing about slot count or column height is hardcoded --
  *  both come from lib/schedule.ts. */
 export default function MachineColumn({
   machine,

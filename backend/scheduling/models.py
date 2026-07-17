@@ -42,6 +42,7 @@ class Appointment(models.Model):
     patient_name = models.CharField(max_length=200)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    notes = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

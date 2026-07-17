@@ -15,6 +15,9 @@ interface UseAppointmentsResult {
   /** Called after a successful cancel so the block disappears
    *  immediately. */
   removeLocally: (id: number) => void;
+  /** Called after a successful edit so the block reflects the new
+   *  time/patient/notes immediately without a second round trip. */
+  updateLocally: (appointment: Appointment) => void;
 }
 
 /** Refetches whenever the selected date changes. Modality filtering is
@@ -70,5 +73,22 @@ export function useAppointments(date: string): UseAppointmentsResult {
     setAppointments((prev) => prev.filter((a) => a.id !== id));
   }, []);
 
-  return { appointments, loading, error, refetch, addLocally, removeLocally };
+  const updateLocally = useCallback(
+    (appointment: Appointment) => {
+      setAppointments((prev) => {
+        // An edit can move an appointment to a different day. This
+        // board only ever holds one day's worth of appointments, so if
+        // the edited one no longer belongs on `date` it should
+        // disappear here rather than linger with a stale time.
+        const stillOnThisDate = appointment.start_time.slice(0, 10) === date;
+        if (!stillOnThisDate) {
+          return prev.filter((a) => a.id !== appointment.id);
+        }
+        return prev.map((a) => (a.id === appointment.id ? appointment : a));
+      });
+    },
+    [date]
+  );
+
+  return { appointments, loading, error, refetch, addLocally, removeLocally, updateLocally };
 }

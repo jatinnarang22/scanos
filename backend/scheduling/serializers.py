@@ -35,6 +35,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "patient_name",
             "start_time",
             "end_time",
+            "notes",
             "created_at",
         ]
         read_only_fields = ["id", "created_at"]

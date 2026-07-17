@@ -17,6 +17,7 @@ export interface Appointment {
    *  for why we never run these through `new Date()` for time-of-day math. */
   start_time: string;
   end_time: string;
+  notes: string;
   created_at: string;
 }
 
@@ -25,6 +26,14 @@ export interface CreateAppointmentPayload {
   patient_name: string;
   start_time: string;
   end_time: string;
+}
+
+export interface UpdateAppointmentPayload {
+  machine: number;
+  patient_name: string;
+  start_time: string;
+  end_time: string;
+  notes: string;
 }
 
 /** Mirrors the backend's one error shape: {"error": {"code", "message"}}.
