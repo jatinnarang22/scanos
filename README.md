@@ -139,19 +139,6 @@ TanStack Query. For this exercise's scope, hand-rolled `fetch` in
 for those two lines with a comment explaining why, rather than either
 contorting working code or adding a library just to satisfy one rule.
 
-## What's not included
-
-The optional extensions (grey-out booked slots in the picker, a
-"next free slot" indicator, optimistic booking with rollback) were left
-out deliberately — the brief frames them as genuinely optional, and the
-priority here was a correct, well-tested core (overlap rules + a data-
-driven board) over a longer feature list. Automated tests were added
-for the overlap rule specifically, since that's the highest-risk piece
-of logic in the whole app.
-
-CI/CD was also left out: there's no deployment target for a take-home
-review, so a pipeline would have nothing real to do.
-
 ## Stack
 
 - Backend: Django 5.2 + Django REST Framework, SQLite
